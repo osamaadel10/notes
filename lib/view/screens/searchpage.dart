@@ -15,61 +15,63 @@ class Searchpage extends StatelessWidget {
       create: (context) => SearchNoteCubit(),
       child: SafeArea(
         child: Scaffold(
-          body: Column(
-            children: [
-              Container(
-                margin: EdgeInsets.symmetric(horizontal: 25.w, vertical: 10.h),
-                child: BlocBuilder<SearchNoteCubit, String>(
-                  builder: (context, keyWord) {
-                    return TextFormField(
-                      onChanged: (value) {
-                        context.read<SearchNoteCubit>().updateKeyword(value);
-                      },
-                      decoration: InputDecoration(
-                        suffixIcon: Icon(Icons.search, size: 25.sp),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(15),
+          body: SingleChildScrollView(
+            child: Column(
+              children: [
+                Container(
+                  margin: EdgeInsets.symmetric(horizontal: 25.w, vertical: 10.h),
+                  child: BlocBuilder<SearchNoteCubit, String>(
+                    builder: (context, keyWord) {
+                      return TextFormField(
+                        onChanged: (value) {
+                          context.read<SearchNoteCubit>().updateKeyword(value);
+                        },
+                        decoration: InputDecoration(
+                          suffixIcon: Icon(Icons.search, size: 25.sp),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(15),
+                          ),
+                          hintText: "Search...",
+                          hintStyle: TextStyle(fontSize: 15.sp),
                         ),
-                        hintText: "Search...",
-                        hintStyle: TextStyle(fontSize: 15.sp),
-                      ),
-                    );
-                  },
+                      );
+                    },
+                  ),
                 ),
-              ),
-              SizedBox(
-                height: MediaQuery.sizeOf(context).height - 120,
-                child: BlocBuilder<GetNotesCubit, GetNotesState>(
-                  builder: (context, state) {
-                    if (state is GetNotesInitial) {
-                      BlocProvider.of<GetNotesCubit>(context).getNotes();
-                    }
-                    List<NoteModel> notes =
-                        BlocProvider.of<GetNotesCubit>(context).notes ?? [];
-
-                    return BlocBuilder<SearchNoteCubit, String>(
-                      builder: (context, keyWord) {
-                        List<NoteModel> filteredNotes = notes.where((note) {
-                          return note.title.contains(keyWord) ||
-                              note.descraption.contains(keyWord) ||
-                              note.date.contains(keyWord);
-                        }).toList();
-
-                        return ListView.builder(
-                          itemCount: filteredNotes.length,
-                          itemBuilder: (context, index) {
-                            return NoteCard(
-                              noteModel: filteredNotes[index],
-                              noteKey: filteredNotes[index].key,
-                            );
-                          },
-                        );
-                      },
-                    );
-                  },
+                SizedBox(
+                  height: MediaQuery.sizeOf(context).height - 120,
+                  child: BlocBuilder<GetNotesCubit, GetNotesState>(
+                    builder: (context, state) {
+                      if (state is GetNotesInitial) {
+                        BlocProvider.of<GetNotesCubit>(context).getNotes();
+                      }
+                      List<NoteModel> notes =
+                          BlocProvider.of<GetNotesCubit>(context).notes ?? [];
+                    
+                      return BlocBuilder<SearchNoteCubit, String>(
+                        builder: (context, keyWord) {
+                          List<NoteModel> filteredNotes = notes.where((note) {
+                            return note.title.contains(keyWord) ||
+                                note.descraption.contains(keyWord) ||
+                                note.date.contains(keyWord);
+                          }).toList();
+                    
+                          return ListView.builder(
+                            itemCount: filteredNotes.length,
+                            itemBuilder: (context, index) {
+                              return NoteCard(
+                                noteModel: filteredNotes[index],
+                                noteKey: filteredNotes[index].noteKey,
+                              );
+                            },
+                          );
+                        },
+                      );
+                    },
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),

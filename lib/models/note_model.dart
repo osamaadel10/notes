@@ -12,11 +12,11 @@ class NoteModel {
   @HiveField(3)
   String date;
   @HiveField(4)
-  String key;
+  String noteKey;
   NoteModel(
       {required this.title,
       required this.descraption,
       required this.colornote,
       required this.date,
-      required this.key});
+      required this.noteKey});
 }

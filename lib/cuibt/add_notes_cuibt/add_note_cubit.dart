@@ -13,7 +13,7 @@ class AddNoteCubit extends Cubit<AddNoteState> {
     emit(AddNoteLaoding());
     try{
       var noteBox = Hive.box<NoteModel>(boxNoteName);
-      noteBox.put("${DateTime.now()}",noteModel);
+      noteBox.put(noteModel.noteKey,noteModel);
       Navigator.pop(context);
       emit(AddNoteSuccess());
     }catch(e){

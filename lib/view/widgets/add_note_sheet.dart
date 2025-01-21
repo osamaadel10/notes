@@ -113,7 +113,7 @@ class _NoteFormState extends State<NoteForm> {
                     colornote:color??Colors.red.value,
                     date:
                         "${DateTime.now().year}-${DateTime.now().month}-${DateTime.now().day}",
-                        key: "${DateTime.now()}"
+                    noteKey: "${DateTime.now()}"
                   ),
                 );
                 isSelected = null;

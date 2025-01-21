@@ -24,14 +24,15 @@ class _EditNoteState extends State<EditNote> {
 
   @override
   Widget build(BuildContext context) {
-   var noteBox = Hive.box<NoteModel>(boxNoteName);
+   var noteBox =  Hive.box<NoteModel>(boxNoteName);
+   print(noteBox.keys);
     return Form(
       key: _formKey,
       autovalidateMode: _autovalidateMode,
       child: Column(
         children: [
           TextFormField(
-            initialValue: noteBox.get(widget.noteKey)!.title,
+            initialValue: noteBox.get(widget.noteKey)?.title,
             onSaved: (value) {
               title = value;
             },
@@ -52,7 +53,7 @@ class _EditNoteState extends State<EditNote> {
           ),
           const SizedBox(height: 12),
           TextFormField(
-            initialValue: noteBox.get(widget.noteKey)!.descraption,
+            initialValue: noteBox.get(widget.noteKey)?.descraption,
             onSaved: (value) {
               content = value;
             },

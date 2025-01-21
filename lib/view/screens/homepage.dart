@@ -45,7 +45,7 @@ class Homepage extends StatelessWidget {
                             itemBuilder: (context, index) {
                               return NoteCard(
                                 noteModel: notes[index],
-                                noteKey: notes[index].key,
+                                noteKey: notes[index].noteKey,
                               );
                             },
                           );

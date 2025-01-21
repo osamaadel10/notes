@@ -54,7 +54,7 @@ class App_Bar extends StatelessWidget {
                           isDarkMode
                               ? Icons.dark_mode
                               : Icons.light_mode,
-                          color:  Colors.yellow,
+                          color: Colors.yellow,
                           size: 30.sp,
                         ),
                       ),
@@ -68,15 +68,28 @@ class App_Bar extends StatelessWidget {
         Container(
           margin: EdgeInsets.symmetric(horizontal: 25.w, vertical: 10.h),
           child: InkWell(
-            onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (context) =>const Searchpage(),)),
+            onTap: () => Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (context) => const Searchpage(),
+              ),
+            ),
             child: TextFormField(
-              enabled: false,
+              readOnly: true, // يمنع الكتابة أو ظهور لوحة المفاتيح
+              onTap: () => Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) => const Searchpage(),
+                ),
+              ),
               decoration: InputDecoration(
                 disabledBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(15),
-                ), 
+                ),
                 suffixIcon: IconButton(
-                  onPressed:  () => Navigator.of(context).push(MaterialPageRoute(builder: (context) =>const Searchpage(),)),
+                  onPressed: () => Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) => const Searchpage(),
+                    ),
+                  ),
                   icon: Icon(Icons.search, size: 25.sp),
                 ),
                 border: OutlineInputBorder(
