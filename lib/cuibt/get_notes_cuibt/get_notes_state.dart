@@ -7,5 +7,5 @@ final class GetNotesInitial extends GetNotesState {}
 final class  GetNotesSuccess extends  GetNotesState {
    final List<NoteModel> notes;
     GetNotesSuccess(this.notes);  
-    
 }
+final class ChangeThemSuccess extends GetNotesState {}

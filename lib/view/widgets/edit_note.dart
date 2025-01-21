@@ -2,14 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hive/hive.dart';
+import 'package:notes/cuibt/edit_notes_cuibt/edit_note_cubit.dart';
 import 'package:notes/cuibt/get_notes_cuibt/get_notes_cubit.dart';
 import 'package:notes/models/note_model.dart';
-import '../../cuibt/add_notes_cuibt/add_note_cubit.dart';
 import '../../main.dart';
+import 'add_note_sheet.dart';
+import 'circle_color.dart';
 
 class EditNote extends StatefulWidget {
-  EditNote({super.key, required this.index});
-  final int index;
+  EditNote({super.key, required this.noteKey});
+  final String noteKey;
 
   @override
   State<EditNote> createState() => _EditNoteState();
@@ -22,14 +24,14 @@ class _EditNoteState extends State<EditNote> {
 
   @override
   Widget build(BuildContext context) {
-    var noteBox = Hive.box<NoteModel>(boxNoteName);
+   var noteBox = Hive.box<NoteModel>(boxNoteName);
     return Form(
       key: _formKey,
       autovalidateMode: _autovalidateMode,
       child: Column(
         children: [
           TextFormField(
-            initialValue:  noteBox.values.elementAt(widget.index).title,
+            initialValue: noteBox.get(widget.noteKey)!.title,
             onSaved: (value) {
               title = value;
             },
@@ -50,7 +52,7 @@ class _EditNoteState extends State<EditNote> {
           ),
           const SizedBox(height: 12),
           TextFormField(
-            initialValue:noteBox.values.elementAt(widget.index).descraption,
+            initialValue: noteBox.get(widget.noteKey)!.descraption,
             onSaved: (value) {
               content = value;
             },
@@ -61,8 +63,8 @@ class _EditNoteState extends State<EditNote> {
                 return null;
               }
             },
-            minLines: 13,
-            maxLines: 20,
+            minLines: 7,
+            maxLines: 15,
             decoration: InputDecoration(
               hintText: "content..",
               border:
@@ -70,13 +72,38 @@ class _EditNoteState extends State<EditNote> {
             ),
           ),
           const SizedBox(height: 12),
+          SizedBox(
+              height: 50.h,
+              width: double.infinity,
+              child: ListView.builder(
+                scrollDirection: Axis.horizontal,
+                itemCount: 10,
+                itemBuilder: (context, index) {
+                  return InkWell(
+                    onTap: () {
+                      setState(() {
+                        isSelected = index;
+                      });
+                    },
+                    child: Padding(
+                      padding: const EdgeInsets.all(2.5),
+                      child: CircleColor(index: index ,isSelected: isSelected, color: colors[index],),
+                    ),
+                  );
+                },
+              )),
+          const SizedBox(height: 12),
           ElevatedButton(
             onPressed: () {
+              int color = 0;
               if (_formKey.currentState!.validate()) {
                 _formKey.currentState!.save();
-                
-      noteBox.values.elementAt(widget.index).title =title??noteBox.values.elementAt(widget.index+1).title; 
-      noteBox.values.elementAt(widget.index).descraption =content??noteBox.values.elementAt(widget.index+1).descraption; 
+              if(isSelected != null){
+                 color = colors[isSelected!];
+              }
+               BlocProvider.of<EditNoteCubit>(context).editNote(widget.noteKey, title, content, color);
+               Navigator.pop(context);
+               isSelected = null;
                 BlocProvider.of<GetNotesCubit>(context).getNotes();
               } else {
                 WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -94,8 +121,8 @@ class _EditNoteState extends State<EditNote> {
               ),
             ),
             child: Text(
-              "Add",
-              style: TextStyle(fontSize: 22.sp, fontWeight: FontWeight.bold),
+              "Edit",
+              style: TextStyle(fontSize: 22.sp, fontWeight: FontWeight.bold,color: Colors.white),
             ),
           )
         ],
@@ -104,13 +131,13 @@ class _EditNoteState extends State<EditNote> {
   }
 }
 
-void editNoteSheet(BuildContext context,int index) {
+void editNoteSheet(BuildContext context, String noteKey) {
   showModalBottomSheet(
     context: context,
     isScrollControlled: true,
     builder: (context) {
       return BlocProvider(
-        create: (context) => AddNoteCubit(),
+        create: (context) => EditNoteCubit(),
         child: SingleChildScrollView(
           child: Padding(
             padding: EdgeInsets.only(
@@ -118,7 +145,9 @@ void editNoteSheet(BuildContext context,int index) {
             ),
             child: Container(
               padding: const EdgeInsets.all(15),
-              child: EditNote(index: index,),
+              child: EditNote(
+                noteKey: noteKey,
+              ),
             ),
           ),
         ),

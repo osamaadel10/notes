@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:notes/cuibt/get_notes_cuibt/get_notes_cubit.dart';
 import 'package:notes/models/note_model.dart';
 import '../../cuibt/add_notes_cuibt/add_note_cubit.dart';
+import 'circle_color.dart';
 
 class NoteForm extends StatefulWidget {
   const NoteForm({super.key});
@@ -12,10 +13,24 @@ class NoteForm extends StatefulWidget {
   State<NoteForm> createState() => _NoteFormState();
 }
 
+int? isSelected ;
+List<int> colors = [
+  Colors.red.value,
+  Colors.grey.value,
+  Colors.blue.value,
+  Colors.cyan.value,
+  Colors.purple.value,
+  Colors.blueGrey.value,
+  Colors.pinkAccent.value,
+  Colors.indigo.value,
+  Colors.teal.value,
+  Colors.brown.value
+];
 class _NoteFormState extends State<NoteForm> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   AutovalidateMode _autovalidateMode = AutovalidateMode.disabled;
   String? title, content;
+  int? color;
 
   @override
   Widget build(BuildContext context) {
@@ -64,6 +79,28 @@ class _NoteFormState extends State<NoteForm> {
             ),
           ),
           const SizedBox(height: 12),
+          SizedBox(
+              height: 50.h,
+              width: double.infinity,
+              child: ListView.builder(
+                scrollDirection: Axis.horizontal,
+                itemCount: 10,
+                itemBuilder: (context, index) {
+                  return InkWell(
+                    onTap: () {
+                      setState(() {
+                        color = colors[index];
+                        isSelected = index;
+                      });
+                    },
+                    child: Padding(
+                      padding: const EdgeInsets.all(2.5),
+                      child: CircleColor(index: index ,isSelected: isSelected??0, color: colors[index],),
+                    ),
+                  );
+                },
+              )),
+          const SizedBox(height: 12),
           ElevatedButton(
             onPressed: () {
               if (_formKey.currentState!.validate()) {
@@ -73,12 +110,13 @@ class _NoteFormState extends State<NoteForm> {
                   NoteModel(
                     title: title!,
                     descraption: content!,
-                    colornote: Colors.green.value,
+                    colornote:color??Colors.red.value,
                     date:
                         "${DateTime.now().year}-${DateTime.now().month}-${DateTime.now().day}",
-                        datetime: DateTime.now().toString()
+                        key: "${DateTime.now()}"
                   ),
                 );
+                isSelected = null;
                 BlocProvider.of<GetNotesCubit>(context).getNotes();
               } else {
                 WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -97,7 +135,7 @@ class _NoteFormState extends State<NoteForm> {
             ),
             child: Text(
               "Add",
-              style: TextStyle(fontSize: 22.sp, fontWeight: FontWeight.bold),
+              style: TextStyle(fontSize: 22.sp, fontWeight: FontWeight.bold,color: Colors.white),
             ),
           )
         ],
@@ -108,6 +146,7 @@ class _NoteFormState extends State<NoteForm> {
 
 void addNoteSheet(BuildContext context) {
   showModalBottomSheet(
+    enableDrag: true,
     context: context,
     isScrollControlled: true,
     builder: (context) {

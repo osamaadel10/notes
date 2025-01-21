@@ -26,35 +26,34 @@ class Homepage extends StatelessWidget {
         body: Directionality(
             textDirection: TextDirection.ltr,
             child: Container(
-              margin: EdgeInsets.symmetric(horizontal: 20.w, vertical: 5.h),
-              child: Column(
-                children: [
-                  const App_Bar(),
-                  SizedBox(
-                    height: MediaQuery.sizeOf(context).height - 190,
-                    child: BlocBuilder<GetNotesCubit, GetNotesState>(
-                      builder: (context, state) {
-                        if (state is GetNotesInitial) {
-                          BlocProvider.of<GetNotesCubit>(context).getNotes();
-                        }
-                        List<NoteModel> notes =
-                            BlocProvider.of<GetNotesCubit>(context).notes ?? [];
-                        if(notes.isNotEmpty){
-                          // notes.sort((a, b) => b.datetime.compareTo(a.datetime));
-                        }
-                        return ListView.builder(
-                          itemCount: notes.length,
-                          itemBuilder: (context, index) {
-                            return NoteCard(
-                              noteModel: notes[index],
-                              index: index,
-                            );
-                          },
-                        );
-                      },
-                    ),
-                  )
-                ],
+              margin: EdgeInsets.symmetric(horizontal: 10.w, vertical: 5.h),
+              child: SingleChildScrollView(
+                child: Column(
+                  children: [
+                    const App_Bar(),
+                    SizedBox(
+                      height: MediaQuery.sizeOf(context).height - 190,
+                      child: BlocBuilder<GetNotesCubit, GetNotesState>(
+                        builder: (context, state) {
+                          if (state is GetNotesInitial) {
+                            BlocProvider.of<GetNotesCubit>(context).getNotes();
+                          }
+                          List<NoteModel> notes =
+                              BlocProvider.of<GetNotesCubit>(context).notes ?? [];
+                          return ListView.builder(
+                            itemCount: notes.length,
+                            itemBuilder: (context, index) {
+                              return NoteCard(
+                                noteModel: notes[index],
+                                noteKey: notes[index].key,
+                              );
+                            },
+                          );
+                        },
+                      ),
+                    )
+                  ],
+                ),
               ),
             )),
       ),

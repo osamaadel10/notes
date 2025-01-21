@@ -3,7 +3,6 @@ part 'note_model.g.dart';
 
 @HiveType(typeId: 0)
 class NoteModel {
-  
   @HiveField(0)
   String title;
   @HiveField(1)
@@ -13,11 +12,11 @@ class NoteModel {
   @HiveField(3)
   String date;
   @HiveField(4)
-  String datetime;
+  String key;
   NoteModel(
       {required this.title,
       required this.descraption,
       required this.colornote,
       required this.date,
-      required this.datetime});
+      required this.key});
 }
