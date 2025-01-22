@@ -74,7 +74,8 @@ class App_Bar extends StatelessWidget {
               ),
             ),
             child: TextFormField(
-              readOnly: true, // يمنع الكتابة أو ظهور لوحة المفاتيح
+              readOnly: true,
+              
               onTap: () => Navigator.of(context).push(
                 MaterialPageRoute(
                   builder: (context) => const Searchpage(),
